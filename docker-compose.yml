@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  db:
+    container_name: news-db
+    image: mongo:6
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  guardian:
+    container_name: guardian-crawler
+    build: .
+    command: scrapy crawl guardian
+    depends_on:
+      - db
+
+volumes:
+  mongo_data:

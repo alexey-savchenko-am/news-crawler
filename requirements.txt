@@ -1,0 +1,6 @@
+scrapy
+pymongo
+pydantic
+beautifulsoup4
+requests
+scikit-learn
