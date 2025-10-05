@@ -1,5 +1,6 @@
 # pipelines.py
 from pymongo import MongoClient
+from pymongo.errors import DuplicateKeyError
 from typing import Any
 from scrapy import Item
 from .items import NewsItem
@@ -35,7 +36,7 @@ class MongoPipeline:
             return
         
         # checking for duplicates by article url
-        existing = self.db.news.find_one({"url": item.url})
+        existing =  self.db[self.collection_name].find_one({"url": item.url})
         if existing:
             return
 
@@ -43,5 +44,10 @@ class MongoPipeline:
             item = dict(item)
        
         news_item = NewsItem(**item)
-        self.db[self.collection_name].insert_one(news_item.model_dump())
+
+        try:
+            self.db[self.collection_name].insert_one(news_item.model_dump())
+        except DuplicateKeyError:
+            spider.logger.info(f"Duplicate skipped: {item.url}")
+
         return news_item

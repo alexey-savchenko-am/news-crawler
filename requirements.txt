@@ -1,4 +1,6 @@
 scrapy
+fastapi
+uvicorn
 pymongo
 pydantic
 beautifulsoup4
