@@ -16,6 +16,11 @@ class GuardianSpider(scrapy.Spider):
         "https://www.theguardian.com/world/africa",
         "https://www.theguardian.com/inequality",
         "https://www.theguardian.com/global-development",
+        "https://www.theguardian.com/football",
+        "https://www.theguardian.com/sport/cricket",
+        "https://www.theguardian.com/sport/golf",
+        "https://www.theguardian.com/sport/us-sport",
+        "https://www.theguardian.com/sport/all?utm_source=chatgpt.com",
     ]
 
     def parse(self, response):
@@ -37,5 +42,5 @@ class GuardianSpider(scrapy.Spider):
             url= response.url,
             date=date_obj,
             content = " ".join(response.css("div.article-body-commercial-selector p::text").getall()),
-            tags = response.css("div.dcr-1ashyvn ul li a::text").getall()
+            tags = [tag.strip().lower() for tag in response.css("div.dcr-1ashyvn ul li a::text").getall()] 
         )

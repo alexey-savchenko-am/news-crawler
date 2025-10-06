@@ -25,10 +25,10 @@ services:
     volumes:
       - mongo_data:/data/db
 
-  guardian:
-    container_name: guardian-crawler
+  crawlers:
+    container_name: news-crawlers
     build: .
-    command: scrapy crawl guardian
+    command: python news-crawler-scheduler.py
     depends_on:
       - db
 
