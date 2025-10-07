@@ -4,7 +4,8 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 
 CRAWLERS = [
-    "guardian"
+    "guardian",
+    "cnn"
 ]
 
 def run_crawler(crawler: str):

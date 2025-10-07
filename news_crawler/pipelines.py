@@ -32,7 +32,7 @@ class MongoPipeline:
     def process_item(self, item: NewsItem | Item, spider):
        
         # content is empty
-        if not item.content.strip():
+        if not item.content.strip() or len(item.tags) == 0:
             return
         
         # checking for duplicates by article url

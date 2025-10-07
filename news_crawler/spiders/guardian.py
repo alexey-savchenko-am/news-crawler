@@ -1,6 +1,7 @@
 import scrapy
 from news_crawler.items import NewsItem
-from datetime import datetime
+from datetime import datetime, timezone
+from news_crawler.utils import DateExtractor
 
 class GuardianSpider(scrapy.Spider):
     name = "guardian"
@@ -32,15 +33,15 @@ class GuardianSpider(scrapy.Spider):
     def parse_article(self, response):
 
         title = response.css("h1::text").get() or response.css("h1 span::text").get()
-
-        date_str = response.xpath('//meta[@property="article:published_time"]/@content').get()
-        date_obj = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+        content = " ".join(response.css("div.article-body-commercial-selector p::text").getall())
+        tags = [tag.strip().lower() for tag in response.css("div.dcr-1ashyvn ul li a::text").getall()] 
+        date = DateExtractor.extract_iso_date(response) or datetime.now(timezone.utc)
 
         yield NewsItem (
             source = "Guardian",
             title = title,
             url= response.url,
-            date=date_obj,
-            content = " ".join(response.css("div.article-body-commercial-selector p::text").getall()),
-            tags = [tag.strip().lower() for tag in response.css("div.dcr-1ashyvn ul li a::text").getall()] 
+            date=date,
+            content = content,
+            tags = tags
         )
