@@ -1,20 +1,21 @@
 from typing import List, Optional
 from pydantic import BaseModel, Field
 from datetime import datetime
+from models.article import Article
 
-class NewsDTO(BaseModel):
-    id: str = Field(..., alias="_id")
-    source: str
+
+class ArticleDTO(BaseModel):
     title: str
     url: str
+    source: str
     date: datetime
     tags: List[str]
     content: str
 
-    class Config:
-        orm_mode = True
-        allow_population_by_field_name = True
-        
+    model_config = {
+        "from_attributes": True
+    }
+
 class NewsResponse(BaseModel):
     count: int
-    items: List[NewsDTO]
+    items: List[ArticleDTO]
