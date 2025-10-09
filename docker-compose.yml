@@ -28,7 +28,10 @@ services:
   crawlers:
     container_name: news-crawlers
     build: .
-    command: python news-crawler-scheduler.py
+    command: python -m scripts.crawl_scheduler
+    environment:
+      - MONGO_URI=mongodb://admin:secret@db:27017
+      - MONGO_DB=news
     depends_on:
       - db
 

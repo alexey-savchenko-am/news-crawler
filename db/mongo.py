@@ -13,4 +13,3 @@ class MongoDB:
     
 
 mongo = MongoDB()
-articles_collection = mongo.get_collection("articles")
