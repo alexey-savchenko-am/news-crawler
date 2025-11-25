@@ -64,8 +64,8 @@ class ArticleRepository(BaseRepository[Article]):
                 if len(batch) >= batch_size:
                     yield batch
                     batch = []
-                if batch:
-                    yield batch
+            if batch:
+                yield batch
         finally:
             cursor.close()
 
@@ -100,6 +100,6 @@ class ArticleRepository(BaseRepository[Article]):
             date_filter["$lte"] = end_date
 
         if date_filter:
-            query["date"] = date_filter
+            query["article_date"] = date_filter
 
         return query

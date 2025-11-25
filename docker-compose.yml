@@ -1,13 +1,14 @@
-version: "3.9"
-
 services:
 
   api:
     container_name: news-api
     build: .
-    command: uvicorn api.news_api:app --host 0.0.0.0 --port 8080 --reload
+    command: >
+      python -m debugpy --listen 0.0.0.0:5678
+      -m uvicorn api.news_api:app --host 0.0.0.0 --port 8080 --reload
     ports:
       - "8080:8080"
+      - "5678:5678"
     environment:
       - MONGO_URI=mongodb://admin:secret@db:27017
       - MONGO_DB=news
@@ -30,6 +31,7 @@ services:
     build: .
     command: python -m scripts.crawl_scheduler
     environment:
+      - CRAWLING_AFTER_START=false
       - MONGO_URI=mongodb://admin:secret@db:27017
       - MONGO_DB=news
     depends_on:

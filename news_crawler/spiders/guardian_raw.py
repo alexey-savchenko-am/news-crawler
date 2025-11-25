@@ -1,0 +1,46 @@
+import scrapy
+from news_crawler.items import NewsItem
+from datetime import datetime, timezone
+from news_crawler.utils import DateExtractor
+
+class GuardianRawSpider(scrapy.Spider):
+    name = "guardian_raw"
+    allowed_domains = ["theguardian.com"]
+    start_urls = [
+        "https://www.theguardian.com/world",
+        "https://www.theguardian.com/world/europe-news",
+        "https://www.theguardian.com/us-news",
+        "https://www.theguardian.com/world/americas",
+        "https://www.theguardian.com/world/asia",
+        "https://www.theguardian.com/australia-news",
+        "https://www.theguardian.com/world/middleeast",
+        "https://www.theguardian.com/world/africa",
+        "https://www.theguardian.com/inequality",
+        "https://www.theguardian.com/global-development",
+        "https://www.theguardian.com/football",
+        "https://www.theguardian.com/sport/cricket",
+        "https://www.theguardian.com/sport/golf",
+        "https://www.theguardian.com/sport/us-sport",
+        "https://www.theguardian.com/sport/all?utm_source=chatgpt.com",
+    ]
+
+    def parse(self, response):
+        for article in response.css("li"):
+            link = article.css("a.dcr-2yd10d::attr(href)").get()
+            if link:
+                yield response.follow(link, callback=self.parse_article)
+
+    def parse_article(self, response):
+        content = " ".join(response.css("div.article-body-commercial-selector p::text").getall())
+        tags = [
+            tag.strip().lower()
+            for tag in response.xpath(
+                '//span[contains(text(), "Explore more on these topics")]/following-sibling::div//ul//li//a/text()'
+            ).getall()
+        ]
+
+        yield {
+            "url" : response.url,
+            "content": content,
+            "tags": [tag for tag_sentence in tags for tag in tag_sentence.split()]
+        }

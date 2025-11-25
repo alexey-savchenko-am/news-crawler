@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, field_serializer
 from bson import ObjectId
 from typing import Optional, List
 from datetime import datetime, timezone
@@ -19,6 +19,10 @@ class Article(BaseModel):
         "arbitrary_types_allowed": True,
         "from_attributes": True
     }
+
+    @field_serializer("id")
+    def serialize_id(self, v, _info):
+        return str(v) if v is not None else None
 
     @field_validator("id", mode="before")
     @classmethod

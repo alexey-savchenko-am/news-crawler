@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Query
 from typing import List, Optional
 from datetime import datetime
-from .news_response import ArticleDTO, NewsResponse
+from .news_response import NewsResponse
 from repositories.article_repository import ArticleRepository
 
 app = FastAPI()
@@ -23,5 +23,5 @@ def get_news(
 
     return NewsResponse(
         count=len(articles), 
-        items = [ArticleDTO.model_validate(article) for article in articles]
+        items = articles
     )

@@ -8,6 +8,7 @@ from repositories.article_repository import ArticleRepository
 from repositories.article_ml_repository import ArticleMLRepository
 from ml.preprocessing import TextPreprocessor
 import logging
+import os
 
 CRAWLERS = [
     "guardian",
@@ -48,7 +49,11 @@ def run_pipeline():
 schedule.every().day.at("06:00").do(run_pipeline)
 
 if __name__ == "__main__":
-    run_pipeline()
+    crawling_after_start = os.getenv("CRAWLING_AFTER_START", "false").lower()
+
+    if crawling_after_start == "true":
+        run_pipeline()
+        
     while True:
         schedule.run_pending()
         time.sleep(60)

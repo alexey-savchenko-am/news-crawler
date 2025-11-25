@@ -10,7 +10,8 @@ class ArticleML(BaseModel):
     article_id: Id
     content: str
     tags: List[str]
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc)),
+    processed_at: Optional[datetime] = None
 
     model_config = {
         "arbitrary_types_allowed": True,
